@@ -2,12 +2,15 @@ import pygame
 from pygame.locals import *
 import time
 
+BLOCK_SIZE = 40
+
 class Snake:
-    def __init__(self, surface):
+    def __init__(self, surface, length):
+        self.length = length
         self.parent_screen = surface
-        self.block = pygame.image.load("src/block.jpg").convert()
-        self.x = 100
-        self.y = 100
+        self.block = pygame.image.load("src/block.jpg").convert() 
+        self.x = [BLOCK_SIZE]*length
+        self.y = [BLOCK_SIZE]*length
         self.direction = 'down'
 
     def move_left(self):
@@ -24,19 +27,26 @@ class Snake:
 
     def draw(self):
         self.parent_screen.fill((0, 102, 51))
-
-        self.parent_screen.blit(self.block, (self.x, self.y))
+        for i in range(self.length):
+            self.parent_screen.blit(self.block,(self.x[i], self.y[i]))
         pygame.display.flip()
 
+        
+
     def glides(self):
+        for i in range(self.length -1, 0, -1):
+            self.x[i] = self.x[i -1]
+            self.y[i] = self.y[i -1]
+
+
         if self.direction == 'left':
-            self.x -= 10
+            self.x[0] -= BLOCK_SIZE
         if self.direction == 'right':
-            self.x += 10
+            self.x[0] += BLOCK_SIZE
         if self.direction == 'up':
-            self.y -= 10
+            self.y[0] -= BLOCK_SIZE
         if self.direction == 'down':
-            self.y += 10
+            self.y[0] += BLOCK_SIZE
 
         self.draw()
 
@@ -45,7 +55,7 @@ class Game:
     def __init__(self):
         pygame.init()
         self.surface = pygame.display.set_mode((900, 500))
-        self.snake = Snake(self.surface)
+        self.snake = Snake(self.surface, 3)
         self.snake.draw()
 
     def run(self):
