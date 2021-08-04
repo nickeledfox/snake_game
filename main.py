@@ -1,4 +1,4 @@
-import pygame, time
+import pygame, time, random
 from pygame.locals import *
 
 BLOCK_SIZE = 40
@@ -14,6 +14,10 @@ class Chocolate:
         self.surface.blit(self.chocolate,(self.x, self.y))
         pygame.display.flip()
 
+    def move(self): #floats(uniform) doesn't work best, tryed
+        self.x = random.randint(0,21)*BLOCK_SIZE
+        self.y = random.randint(0,11)*BLOCK_SIZE
+
 
 class Snake:
     def __init__(self, surface, length):
@@ -23,6 +27,11 @@ class Snake:
         self.x = [BLOCK_SIZE]*length
         self.y = [BLOCK_SIZE]*length
         self.direction = 'down'
+
+    def increase_length(self):
+        self.length += 1
+        self.x.append(-1)
+        self.y.append(-1)
 
     def move_left(self):
         self.direction = 'left'
@@ -41,8 +50,6 @@ class Snake:
         for i in range(self.length):
             self.parent_screen.blit(self.block,(self.x[i], self.y[i]))
         pygame.display.flip()
-
-        
 
     def glides(self):
         for i in range(self.length -1, 0, -1):
@@ -70,9 +77,29 @@ class Game:
         self.chocolate = Chocolate(self.surface)
         self.chocolate.draw_chocolate()
 
+    def is_collision(self, x1, y1, x2, y2):
+        if x1 >= x2 and x1 < x2 + BLOCK_SIZE:
+            if y1 >= y2 and y1 < y2 + BLOCK_SIZE:
+                return True
+        return False
+
+
     def play(self):
         self.snake.glides()
         self.chocolate.draw_chocolate()
+        self.display_score()
+        pygame.display.flip()
+
+
+        if self.is_collision(self.snake.x[0], self.snake.y[0], self.chocolate.x, self.chocolate.y):
+            self.snake.increase_length()
+            self.chocolate.move()
+
+    def display_score(self):
+        font = pygame.font.Font('src/Gilroy-Semibold.ttf', 33)
+        score = font.render(f"Score: {self.snake.length -3}", True, (12, 3, 74))
+        self.surface.blit(score,(750,10))
+
 
     def run(self):
         running = True
