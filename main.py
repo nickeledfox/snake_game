@@ -1,22 +1,24 @@
-import pygame, time, random
+import pygame, sys, time, random
 from pygame.locals import *
 
 BLOCK_SIZE = 40
 
-class Chocolate:         
+class Food:         
     def __init__(self, surface):
-        self.chocolate = pygame.image.load('src/chocolate.png')
+        self.list_of_food = ['src/chocolate.png', 'src/meat.png', 'src/hot-dog.png','src/poultry-leg.png',]
+        self.food = pygame.image.load(random.choice(self.list_of_food))
         self.surface = surface
         self.x = 120
         self.y = 120
+        pygame.display.flip()
 
     def draw_chocolate(self):
-        self.surface.blit(self.chocolate,(self.x, self.y))
+        self.surface.blit(self.food,(self.x, self.y))
         pygame.display.flip()
 
     def move(self): #floats(uniform) doesn't work best, tryed
-        self.x = random.randint(0,21)*BLOCK_SIZE
         self.y = random.randint(0,11)*BLOCK_SIZE
+        self.x = random.randint(0,21)*BLOCK_SIZE
 
 
 class Snake:
@@ -74,8 +76,8 @@ class Game:
         self.surface = pygame.display.set_mode((900, 500))
         self.snake = Snake(self.surface, 3)
         self.snake.draw_length()
-        self.chocolate = Chocolate(self.surface)
-        self.chocolate.draw_chocolate()
+        self.food = Food(self.surface)
+        self.food.draw_chocolate()
 
     def is_collision(self, x1, y1, x2, y2):
         if x1 >= x2 and x1 < x2 + BLOCK_SIZE:
@@ -83,17 +85,16 @@ class Game:
                 return True
         return False
 
-
     def play(self):
         self.snake.glides()
-        self.chocolate.draw_chocolate()
+        self.food.draw_chocolate()
         self.display_score()
         pygame.display.flip()
 
 
-        if self.is_collision(self.snake.x[0], self.snake.y[0], self.chocolate.x, self.chocolate.y):
+        if self.is_collision(self.snake.x[0], self.snake.y[0], self.food.x, self.food.y):
             self.snake.increase_length()
-            self.chocolate.move()
+            self.food.move()
 
     def display_score(self):
         font = pygame.font.Font('src/Gilroy-Semibold.ttf', 33)
@@ -123,6 +124,7 @@ class Game:
 
                 elif event.type == QUIT:
                     running = False
+                    sys.exit()
                     
             self.play()
 
