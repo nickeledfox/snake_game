@@ -1,7 +1,9 @@
 import pygame, sys, time, random
 from pygame.locals import *
 
-BLOCK_SIZE = 40
+BLOCK_SIZE = 40 #refers to default snake body segment
+font_color = (255,255,255)
+background_color = (0, 102, 51)
 
 class Food:         
     def __init__(self, surface):
@@ -48,7 +50,7 @@ class Snake:
         self.direction = 'down'
 
     def draw_length(self):
-        self.parent_screen.fill((0, 102, 51))
+        self.parent_screen.fill((background_color))
         for i in range(self.length):
             self.parent_screen.blit(self.block,(self.x[i], self.y[i]))
         pygame.display.flip()
@@ -74,7 +76,7 @@ class Game:
     def __init__(self):
         pygame.init()
         self.surface = pygame.display.set_mode((900, 500))
-        self.snake = Snake(self.surface, 8)
+        self.snake = Snake(self.surface, 3)
         self.snake.draw_length()
         self.food = Food(self.surface)
         self.food.draw_chocolate()
@@ -104,17 +106,22 @@ class Game:
 
     def display_score(self):
         font = pygame.font.Font('src/font/Gilroy-Semibold.ttf', 33)
-        score = font.render(f"Score: {self.snake.length -3}", True, (12, 3, 74))
+        score = font.render(f"Score: {self.snake.length -3}", True, (font_color))
         self.surface.blit(score,(750,10))
 
     def show_you_died(self):
-        self.surface.fill((0, 102, 51))
-        font = pygame.font.Font('src/font/Gilroy-Bold.ttf', 33)
-        message = font.render(f"Score: {self.snake.length -3}", True, (255,255,255))
+        self.surface.fill((background_color))
+        font = pygame.font.Font('src/font/Gilroy-Bold.ttf', 34)
+        message = font.render(f"Score: {self.snake.length -3}", True, (font_color))
         self.surface.blit(message, (390, 280))
-        options = font.render("To play again press Enter. To exit press Escape!", True, (255, 255, 255))
-        self.surface.blit(options, (100, 350))
+        options = font.render("To play again press Enter. To exit press Escape!", True, (font_color))
+        self.surface.blit(options, (65, 350))
         pygame.display.flip()
+
+    
+    def reset(self):
+        self.snake = Snake(self.surface, 3)
+        self.food = Food(self.surface)
 
 
     def run(self):
@@ -126,17 +133,22 @@ class Game:
                 if event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
                         running = False
-                    if event.key == K_LEFT or event.key == ord('a'):
-                        self.snake.move_left()
 
-                    if event.key == K_RIGHT or event.key == ord('d'):
-                        self.snake.move_right()
+                    if event.key == K_RETURN:
+                        pause = False
+                    if not pause:
 
-                    if event.key == K_UP or event.key == ord('w'):
-                        self.snake.move_up()
+                        if event.key == K_LEFT or event.key == ord('a'):
+                            self.snake.move_left()
 
-                    if event.key == K_DOWN or event.key == ord('s'):
-                        self.snake.move_down()
+                        if event.key == K_RIGHT or event.key == ord('d'):
+                            self.snake.move_right()
+
+                        if event.key == K_UP or event.key == ord('w'):
+                            self.snake.move_up()
+
+                        if event.key == K_DOWN or event.key == ord('s'):
+                            self.snake.move_down()
 
                 elif event.type == QUIT:
                     running = False
@@ -149,7 +161,7 @@ class Game:
             except Exception as e:
                 self.show_you_died()
                 pause = True
-                # self.reset()      
+                self.reset()      
 
             time.sleep(0.25)
 
