@@ -3,13 +3,9 @@ from pygame.locals import *
 
 BLOCK_SIZE = 40
 
-pygame.font.init()
-font = pygame.font.Font('src/Gilroy-Semibold.ttf', 33)
-
-
 class Food:         
     def __init__(self, surface):
-        self.list_of_food = ['src/chocolate.png', 'src/meat.png', 'src/hot-dog.png','src/poultry-leg.png',]
+        self.list_of_food = ['src/images/chocolate.png', 'src/images/meat.png', 'src/images/hot-dog.png','src/images/poultry-leg.png',]
         self.food = pygame.image.load(random.choice(self.list_of_food))
         self.surface = surface
         self.x = 120
@@ -29,7 +25,7 @@ class Snake:
     def __init__(self, surface, length):
         self.length = length
         self.parent_screen = surface
-        self.block = pygame.image.load('src/block.jpg').convert() 
+        self.block = pygame.image.load('src/images/block.jpg').convert() 
         self.x = [BLOCK_SIZE]*length
         self.y = [BLOCK_SIZE]*length
         self.direction = 'down'
@@ -78,7 +74,7 @@ class Game:
     def __init__(self):
         pygame.init()
         self.surface = pygame.display.set_mode((900, 500))
-        self.snake = Snake(self.surface, 3)
+        self.snake = Snake(self.surface, 8)
         self.snake.draw_length()
         self.food = Food(self.surface)
         self.food.draw_chocolate()
@@ -107,21 +103,23 @@ class Game:
 
 
     def display_score(self):
+        font = pygame.font.Font('src/font/Gilroy-Semibold.ttf', 33)
         score = font.render(f"Score: {self.snake.length -3}", True, (12, 3, 74))
         self.surface.blit(score,(750,10))
 
-
     def show_you_died(self):
-        self.surface.fill(15, 13, 44)
-        message = font.render(f"You Died! Your Score is: {self.snake.length -3}", True, (0, 102, 51))
-        self.surface.blit(message, (600, 200))
-        options = font.render(f"To start New game press Enter. To exit the game press Exit.", True, (0, 102, 51))
-        self.surface.blit(options, (700, 100))
+        self.surface.fill((0, 102, 51))
+        font = pygame.font.Font('src/font/Gilroy-Bold.ttf', 33)
+        message = font.render(f"Score: {self.snake.length -3}", True, (255,255,255))
+        self.surface.blit(message, (390, 280))
+        options = font.render("To play again press Enter. To exit press Escape!", True, (255, 255, 255))
+        self.surface.blit(options, (100, 350))
         pygame.display.flip()
-        pass
+
 
     def run(self):
         running = True
+        pause = False
 
         while running:
             for event in pygame.event.get():
@@ -146,11 +144,14 @@ class Game:
 
 
             try:
-                self.play()
+                if not pause:
+                    self.play()
             except Exception as e:
-                self.show_you_died()       
+                self.show_you_died()
+                pause = True
+                # self.reset()      
 
-            time.sleep(0.3)
+            time.sleep(0.25)
 
 if __name__ == '__main__':
     game = Game()
