@@ -3,6 +3,10 @@ from pygame.locals import *
 
 BLOCK_SIZE = 40
 
+pygame.font.init()
+font = pygame.font.Font('src/Gilroy-Semibold.ttf', 33)
+
+
 class Food:         
     def __init__(self, surface):
         self.list_of_food = ['src/chocolate.png', 'src/meat.png', 'src/hot-dog.png','src/poultry-leg.png',]
@@ -16,7 +20,7 @@ class Food:
         self.surface.blit(self.food,(self.x, self.y))
         pygame.display.flip()
 
-    def move(self): #floats(uniform) doesn't work best, tryed
+    def move(self): #floats(uniform) doesn't work best
         self.y = random.randint(0,11)*BLOCK_SIZE
         self.x = random.randint(0,21)*BLOCK_SIZE
 
@@ -96,11 +100,25 @@ class Game:
             self.snake.increase_length()
             self.food.move()
 
+        
+        for i in range(3, self.snake.length):
+            if self.is_collision(self.snake.x[0], self.snake.y[0], self.snake.x[i], self.snake.y[i]):
+                raise 'You Died'
+
+
     def display_score(self):
-        font = pygame.font.Font('src/Gilroy-Semibold.ttf', 33)
         score = font.render(f"Score: {self.snake.length -3}", True, (12, 3, 74))
         self.surface.blit(score,(750,10))
 
+
+    def show_you_died(self):
+        self.surface.fill(15, 13, 44)
+        message = font.render(f"You Died! Your Score is: {self.snake.length -3}", True, (0, 102, 51))
+        self.surface.blit(message, (600, 200))
+        options = font.render(f"To start New game press Enter. To exit the game press Exit.", True, (0, 102, 51))
+        self.surface.blit(options, (700, 100))
+        pygame.display.flip()
+        pass
 
     def run(self):
         running = True
@@ -125,8 +143,12 @@ class Game:
                 elif event.type == QUIT:
                     running = False
                     sys.exit()
-                    
-            self.play()
+
+
+            try:
+                self.play()
+            except Exception as e:
+                self.show_you_died()       
 
             time.sleep(0.3)
 
