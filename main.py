@@ -75,6 +75,7 @@ class Snake:
 class Game:
     def __init__(self):
         pygame.init()
+        pygame.mixer.init()
         self.surface = pygame.display.set_mode((900, 500))
         self.snake = Snake(self.surface, 3)
         self.snake.draw_length()
@@ -111,9 +112,11 @@ class Game:
 
     def show_you_died(self):
         self.surface.fill((background_color))
-        font = pygame.font.Font('src/font/Gilroy-Bold.ttf', 34)
-        message = font.render(f"Score: {self.snake.length -3}", True, (font_color))
-        self.surface.blit(message, (390, 280))
+        font = pygame.font.Font('src/font/Gilroy-Bold.ttf', 32)
+        message = font.render(f"Oops! You died :(", True, (font_color))
+        self.surface.blit(message, (305, 210))
+        show_score = font.render(f"Score: {self.snake.length -3}", True, (font_color))
+        self.surface.blit(show_score, (355, 280))
         options = font.render("To play again press Enter. To exit press Escape!", True, (font_color))
         self.surface.blit(options, (65, 350))
         pygame.display.flip()
