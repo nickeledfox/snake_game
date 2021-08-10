@@ -75,7 +75,6 @@ class Snake:
 class Game:
     def __init__(self):
         pygame.init()
-        pygame.mixer.init()
         self.surface = pygame.display.set_mode((900, 500))
         self.snake = Snake(self.surface, 3)
         self.snake.draw_length()
@@ -98,10 +97,9 @@ class Game:
         if self.is_collision(self.snake.x[0], self.snake.y[0], self.food.x, self.food.y):
             self.snake.increase_length()
             self.food.move()
-
         
         for i in range(3, self.snake.length):
-            if self.is_collision(self.snake.x[0], self.snake.y[0], self.snake.x[i], self.snake.y[i]):
+            if self.is_collision(self.snake.x[0], self.snake.y[0], self.snake.x[i], self.snake.y[i]) or not (0 <= self.snake.x[0] <= 900 and 0 <= self.snake.y[0] <= 500):
                 raise 'You Died'
 
 
