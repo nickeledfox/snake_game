@@ -1,6 +1,6 @@
 ## About The Project :snake:
 
-Well you know what that is Built just for fun :surfer:
+Well you know what that is :smile: Built just for fun :surfer:
 
 ### Built With
 
