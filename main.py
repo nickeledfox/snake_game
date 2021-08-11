@@ -14,7 +14,7 @@ class Food:
         self.y = 120
         pygame.display.flip()
 
-    def draw_chocolate(self):
+    def draw_food(self):
         self.surface.blit(self.food,(self.x, self.y))
         pygame.display.flip()
 
@@ -79,7 +79,7 @@ class Game:
         self.snake = Snake(self.surface, 3)
         self.snake.draw_length()
         self.food = Food(self.surface)
-        self.food.draw_chocolate()
+        self.food.draw_food()
 
     def is_collision(self, x1, y1, x2, y2):
         if x1 >= x2 and x1 < x2 + BLOCK_SIZE:
@@ -89,10 +89,9 @@ class Game:
 
     def play(self):
         self.snake.glides()
-        self.food.draw_chocolate()
+        self.food.draw_food()
         self.display_score()
         pygame.display.flip()
-
 
         if self.is_collision(self.snake.x[0], self.snake.y[0], self.food.x, self.food.y):
             self.snake.increase_length()
@@ -101,7 +100,6 @@ class Game:
         for i in range(3, self.snake.length):
             if self.is_collision(self.snake.x[0], self.snake.y[0], self.snake.x[i], self.snake.y[i]) or not (0 <= self.snake.x[0] <= 900 and 0 <= self.snake.y[0] <= 500):
                 raise 'You Died'
-
 
     def display_score(self):
         font = pygame.font.Font('src/font/Gilroy-Semibold.ttf', 33)
